@@ -7,7 +7,6 @@ from .models import MenuItem, Order, Table
 from .forms import MenuItemForm, OrderForm
 
 
-# 🔐 Authentication
 def register_user(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -36,7 +35,7 @@ def logout_user(request):
     return redirect('login')
 
 
-# 🍽️ Menu management
+
 @login_required
 def menu_list(request):
     query = request.GET.get('q', "")
@@ -47,7 +46,7 @@ def menu_list(request):
     if query:
         menu_items = menu_items.filter(
             Q(name__icontains=query) |
-            Q(category__icontains=query)  # fixed typo: categories -> category
+            Q(category__icontains=query)  
         )
 
     if sort in ['name', '-name', 'price', '-price', 'category', '-category']:
@@ -62,7 +61,7 @@ def add_menu_item(request):
         form = MenuItemForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('menu_list')  # ✅ Fixed
+            return redirect('menu_list') 
     else:
         form = MenuItemForm()
     return render(request, 'orders/add_menu_item.html', {'form': form})
@@ -75,7 +74,7 @@ def update_menu_item(request, id):
         form = MenuItemForm(request.POST, instance=menu_item)
         if form.is_valid():
             form.save()
-            return redirect('menu_list')  # ✅ Fixed
+            return redirect('menu_list')  
     else:
         form = MenuItemForm(instance=menu_item)
     return render(request, 'orders/update_menu_item.html', {'form': form})
@@ -86,11 +85,11 @@ def delete_menu_item(request, id):
     menu_item = get_object_or_404(MenuItem, id=id)
     if request.method == 'POST':
         menu_item.delete()
-        return redirect('menu_list')  # ✅ Fixed
+        return redirect('menu_list')  
     return render(request, 'orders/delete_menu_item.html', {'menu_item': menu_item})
 
 
-# 🧾 Orders management
+
 @login_required
 def order_list(request):
     query = request.GET.get('q', "")
@@ -102,7 +101,7 @@ def order_list(request):
     if query:
         orders = orders.filter(
             Q(table__number__icontains=query) |
-            Q(items__name__icontains=query)  # fixed: item -> items
+            Q(items__name__icontains=query)  
         ).distinct()
 
     if status_filter:
@@ -129,11 +128,11 @@ def add_order(request):
             order.save()
             form.save_m2m()
 
-            # Calculate total price
+            
             total = order.items.aggregate(total=Sum('price'))['total']
             order.total_price = total or 0
             order.save()
-            return redirect('orders_list')  # ✅ Fixed
+            return redirect('orders_list')  
     else:
         form = OrderForm()
     return render(request, 'orders/add_order.html', {'form': form})
@@ -148,7 +147,7 @@ def update_order(request, id):
             order = form.save(commit=False)
             form.save_m2m()
 
-            # Recalculate total
+            
             total = order.items.aggregate(total=Sum('price'))['total']
             order.total_price = total or 0
             order.save()
