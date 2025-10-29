@@ -1,0 +1,35 @@
+{% extends 'orders/base.html' %}
+{% block content %}
+<h1>Orders</h1>
+<form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by item or table">
+    <select name="sort">
+        <option value="table" {% if sort == 'table' %}selected{% endif %}>Table (A-Z)</option>
+        <option value="-table" {% if sort == '-table' %}selected{% endif %}>Table (Z-A)</option>
+        <option value="status" {% if sort == 'status' %}selected{% endif %}>Status</option>
+    </select>
+    <button type="submit">Search/Sort</button>
+</form>
+<a href="{% url 'add_order' %}">Add New Order</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Table</th>
+        <th>Item</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.table }}</td>
+        <td>{{ order.item.name }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+            <a href="{% url 'update_order' order.id %}">Edit</a> |
+            <a href="{% url 'delete_order' order.id %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,6 @@
+<h2>Add Order</h2>
+<form method="post" action="{% url 'add_order' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Order</button>
+</form>

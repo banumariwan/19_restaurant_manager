@@ -1,0 +1,36 @@
+{% extends 'orders/base.html' %}
+{% block content %}
+<h1>Menu Items</h1>
+<form method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name">
+    <select name="sort">
+        <option value="name" {% if sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+        <option value="-name" {% if sort == '-name' %}selected{% endif %}>Name (Z-A)</option>
+        <option value="price" {% if sort == 'price' %}selected{% endif %}>Price (Low → High)</option>
+        <option value="-price" {% if sort == '-price' %}selected{% endif %}>Price (High → Low)</option>
+    </select>
+    <button type="submit">Search/Sort</button>
+</form>
+<a href="{% url 'add_menu_item' %}">Add New Menu Item</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in menu_items %}
+    <tr>
+        <td>{{ item.id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.price }}</td>
+        <td>
+            <a href="{% url 'update_menu_item' item.id %}">Edit</a> |
+            <a href="{% url 'delete_menu_item' item.id %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
